@@ -43,7 +43,6 @@ func (lex *Lexer) Lex(lval *yySymType) int {
 		write exec;
 	}%%
 
-
 	return tok
 }
 

@@ -1,0 +1,86 @@
+
+state 0
+	$accept: .main $end 
+
+	TITLE  shift 3
+	.  error
+
+	erd  goto 2
+	main  goto 1
+
+state 1
+	$accept:  main.$end 
+
+	$end  accept
+	.  error
+
+
+state 2
+	main:  erd.    (1)
+
+	.  reduce 1 (src line 25)
+
+
+state 3
+	erd:  TITLE.':' TITLE_VALUE 
+	erd:  TITLE.':' TITLE_VALUE entity 
+
+	':'  shift 4
+	.  error
+
+
+state 4
+	erd:  TITLE ':'.TITLE_VALUE 
+	erd:  TITLE ':'.TITLE_VALUE entity 
+
+	TITLE_VALUE  shift 5
+	.  error
+
+
+state 5
+	erd:  TITLE ':' TITLE_VALUE.    (2)
+	erd:  TITLE ':' TITLE_VALUE.entity 
+
+	'['  shift 7
+	.  reduce 2 (src line 31)
+
+	entity  goto 6
+
+state 6
+	erd:  TITLE ':' TITLE_VALUE entity.    (3)
+
+	.  reduce 3 (src line 36)
+
+
+state 7
+	entity:  '['.ENTITY ']' 
+
+	ENTITY  shift 8
+	.  error
+
+
+state 8
+	entity:  '[' ENTITY.']' 
+
+	']'  shift 9
+	.  error
+
+
+state 9
+	entity:  '[' ENTITY ']'.    (4)
+
+	.  reduce 4 (src line 41)
+
+
+9 terminals, 4 nonterminals
+5 grammar rules, 10/16000 states
+0 shift/reduce, 0 reduce/reduce conflicts reported
+53 working sets used
+memory: parser 2/240000
+0 extra closures
+6 shift entries, 1 exceptions
+3 goto entries
+0 entries saved by goto default
+Optimizer space used: output 9/240000
+9 table entries, 0 zero
+maximum spread: 9, maximum offset: 9
