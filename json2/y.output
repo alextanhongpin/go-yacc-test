@@ -1,0 +1,187 @@
+
+state 0
+	$accept: .object $end 
+
+	'{'  shift 2
+	.  error
+
+	object  goto 1
+
+state 1
+	$accept:  object.$end 
+
+	$end  accept
+	.  error
+
+
+state 2
+	object:  '{'.members '}' 
+	members: .    (2)
+
+	String  shift 5
+	.  reduce 2 (src line 41)
+
+	members  goto 3
+	pair  goto 4
+
+state 3
+	object:  '{' members.'}' 
+	members:  members.',' pair 
+
+	'}'  shift 6
+	','  shift 7
+	.  error
+
+
+state 4
+	members:  pair.    (3)
+
+	.  reduce 3 (src line 42)
+
+
+state 5
+	pair:  String.':' value 
+
+	':'  shift 8
+	.  error
+
+
+state 6
+	object:  '{' members '}'.    (1)
+
+	.  reduce 1 (src line 39)
+
+
+state 7
+	members:  members ','.pair 
+
+	String  shift 5
+	.  error
+
+	pair  goto 9
+
+state 8
+	pair:  String ':'.value 
+
+	String  shift 11
+	Number  shift 12
+	Literal  shift 13
+	'{'  shift 2
+	'['  shift 16
+	.  error
+
+	object  goto 14
+	array  goto 15
+	value  goto 10
+
+state 9
+	members:  members ',' pair.    (4)
+
+	.  reduce 4 (src line 43)
+
+
+state 10
+	pair:  String ':' value.    (5)
+
+	.  reduce 5 (src line 45)
+
+
+state 11
+	value:  String.    (10)
+
+	.  reduce 10 (src line 53)
+
+
+state 12
+	value:  Number.    (11)
+
+	.  reduce 11 (src line 54)
+
+
+state 13
+	value:  Literal.    (12)
+
+	.  reduce 12 (src line 55)
+
+
+state 14
+	value:  object.    (13)
+
+	.  reduce 13 (src line 56)
+
+
+state 15
+	value:  array.    (14)
+
+	.  reduce 14 (src line 57)
+
+
+state 16
+	array:  '['.elements ']' 
+	elements: .    (7)
+
+	String  shift 11
+	Number  shift 12
+	Literal  shift 13
+	'{'  shift 2
+	'['  shift 16
+	.  reduce 7 (src line 48)
+
+	object  goto 14
+	array  goto 15
+	elements  goto 17
+	value  goto 18
+
+state 17
+	array:  '[' elements.']' 
+	elements:  elements.',' value 
+
+	','  shift 20
+	']'  shift 19
+	.  error
+
+
+state 18
+	elements:  value.    (8)
+
+	.  reduce 8 (src line 49)
+
+
+state 19
+	array:  '[' elements ']'.    (6)
+
+	.  reduce 6 (src line 47)
+
+
+state 20
+	elements:  elements ','.value 
+
+	String  shift 11
+	Number  shift 12
+	Literal  shift 13
+	'{'  shift 2
+	'['  shift 16
+	.  error
+
+	object  goto 14
+	array  goto 15
+	value  goto 21
+
+state 21
+	elements:  elements ',' value.    (9)
+
+	.  reduce 9 (src line 50)
+
+
+13 terminals, 7 nonterminals
+15 grammar rules, 22/16000 states
+0 shift/reduce, 0 reduce/reduce conflicts reported
+56 working sets used
+memory: parser 19/240000
+11 extra closures
+23 shift entries, 1 exceptions
+10 goto entries
+4 entries saved by goto default
+Optimizer space used: output 23/240000
+23 table entries, 1 zero
+maximum spread: 13, maximum offset: 20
