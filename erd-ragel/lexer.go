@@ -81,19 +81,19 @@ func (lex *Lexer) Lex(lval *yySymType) int {
 	}
 	goto st_out
 tr0:
-//line lexer.rl:58
+//line lexer.rl:60
  lex.te = ( lex.p)+1
 { println(string(lex.data[lex.ts])); tok = int(lex.data[lex.ts]); {( lex.p)++;  lex.cs = 0; goto _out } }
 	goto st0
 tr5:
-//line lexer.rl:56
+//line lexer.rl:58
  lex.te = ( lex.p)+1
-{ tok = LBRAC; }
+{ tok = LBRAC; {( lex.p)++;  lex.cs = 0; goto _out } }
 	goto st0
 tr6:
-//line lexer.rl:57
+//line lexer.rl:59
  lex.te = ( lex.p)+1
-{ tok = RBRAC; }
+{ tok = RBRAC; {( lex.p)++;  lex.cs = 0; goto _out } }
 	goto st0
 tr7:
 //line NONE:1
@@ -103,13 +103,13 @@ tr7:
  tok = TITLE; {( lex.p)++;  lex.cs = 0; goto _out } }
 	case 2:
 	{( lex.p) = ( lex.te) - 1
- lval.str = lex.string(); println("string:", lex.string()); tok = STRING; }
+ lval.str = lex.string(); println("string:", lex.string()); tok = STRING; {( lex.p)++;  lex.cs = 0; goto _out } }
 	case 3:
 	{( lex.p) = ( lex.te) - 1
- println("break"); tok = BREAK; }
+ println("break"); tok = BREAK; {( lex.p)++;  lex.cs = 0; goto _out } }
 	case 4:
 	{( lex.p) = ( lex.te) - 1
- println("newline", lex.te, eof); if lex.te == eof { {( lex.p)++;  lex.cs = 0; goto _out } } else { tok = NEWLINE; } }
+ println("newline", lex.te, eof); if lex.te != eof { tok = NEWLINE }; {( lex.p)++;  lex.cs = 0; goto _out } }
 	case 7:
 	{( lex.p) = ( lex.te) - 1
  println(string(lex.data[lex.ts])); tok = int(lex.data[lex.ts]); {( lex.p)++;  lex.cs = 0; goto _out } }
@@ -120,7 +120,7 @@ tr9:
 //line lexer.rl:53
  lex.te = ( lex.p)
 ( lex.p)--
-{ lval.str = lex.string(); println("string:", lex.string()); tok = STRING; }
+{ lval.str = lex.string(); println("string:", lex.string()); tok = STRING; {( lex.p)++;  lex.cs = 0; goto _out } }
 	goto st0
 	st0:
 //line NONE:1
@@ -179,7 +179,7 @@ tr1:
 //line NONE:1
  lex.te = ( lex.p)+1
 
-//line lexer.rl:55
+//line lexer.rl:57
  lex.act = 4;
 	goto st1
 tr8:
@@ -213,7 +213,7 @@ tr3:
 //line NONE:1
  lex.te = ( lex.p)+1
 
-//line lexer.rl:58
+//line lexer.rl:60
  lex.act = 7;
 	goto st2
 tr13:
@@ -415,7 +415,7 @@ tr13:
 	_out: {}
 	}
 
-//line lexer.rl:63
+//line lexer.rl:65
 
 
 	return tok

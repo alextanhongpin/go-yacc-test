@@ -50,11 +50,13 @@ func (lex *Lexer) Lex(lval *yySymType) int {
 
 		main := |*
 			title_name => { tok = TITLE; fbreak; };
-			string => { lval.str = lex.string(); println("string:", lex.string()); tok = STRING; };
-			break => { println("break"); tok = BREAK; };
-			newline => { println("newline", lex.te, eof); if lex.te == eof { fbreak; } else { tok = NEWLINE; } };
-			'[' => { tok = LBRAC; };
-			']' => { tok = RBRAC; };
+			string => { lval.str = lex.string(); println("string:", lex.string()); tok = STRING; fbreak; };
+			break => { println("break"); tok = BREAK; fbreak; };
+			# newline => { println("newline", lex.te, eof); if lex.te == eof { fbreak; } else { tok = NEWLINE; } };
+			# NOTE: We skip the last EOF if exists ...
+			 newline => { println("newline", lex.te, eof); if lex.te != eof { tok = NEWLINE }; fbreak; };
+			'[' => { tok = LBRAC; fbreak; };
+			']' => { tok = RBRAC; fbreak; };
 			any => { println(string(lex.data[lex.ts])); tok = int(lex.data[lex.ts]); fbreak; };
 		*|;
 

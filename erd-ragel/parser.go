@@ -61,17 +61,17 @@ const yyPrivate = 57344
 const yyLast = 20
 
 var yyAct = [...]int{
-	15, 6, 5, 10, 4, 18, 14, 17, 11, 9,
-	3, 13, 12, 8, 16, 7, 2, 1, 0, 19,
+	15, 7, 5, 10, 4, 18, 14, 17, 11, 9,
+	3, 13, 12, 8, 16, 6, 2, 1, 0, 19,
 }
 
 var yyPact = [...]int{
-	4, -1000, -5, -8, 9, 2, -1000, -6, 1, -1000,
+	4, -1000, -5, -8, 9, 2, -6, -1000, 1, -1000,
 	9, 6, -1000, -2, 0, -1000, -3, -1000, 0, -1000,
 }
 
 var yyPgo = [...]int{
-	0, 17, 16, 15, 1, 0, 14,
+	0, 17, 16, 1, 15, 0, 14,
 }
 
 var yyR1 = [...]int{
@@ -79,17 +79,17 @@ var yyR1 = [...]int{
 }
 
 var yyR2 = [...]int{
-	0, 1, 3, 3, 1, 3, 5, 1, 3, 1,
+	0, 1, 3, 3, 3, 1, 5, 1, 3, 1,
 }
 
 var yyChk = [...]int{
 	-1000, -1, -2, 6, 9, 10, -4, -3, 4, 7,
-	9, 7, -4, 5, 8, -5, -6, 7, 8, -5,
+	9, 7, -3, 5, 8, -5, -6, 7, 8, -5,
 }
 
 var yyDef = [...]int{
-	0, -2, 1, 0, 0, 0, 2, 4, 0, 3,
-	0, 0, 5, 0, 0, 6, 7, 9, 0, 8,
+	0, -2, 1, 0, 0, 0, 2, 5, 0, 3,
+	0, 0, 4, 0, 0, 6, 7, 9, 0, 8,
 }
 
 var yyTok1 = [...]int{
@@ -468,16 +468,16 @@ yydefault:
 			yyVAL.title = yyDollar[3].str
 		}
 	case 4:
-		yyDollar = yyS[yypt-1 : yypt+1]
+		yyDollar = yyS[yypt-3 : yypt+1]
 //line parser.y:51
 		{
-			yyVAL.entities = []Entity{yyDollar[1].entity}
+			yyVAL.entities = append(yyVAL.entities, yyDollar[3].entity)
 		}
 	case 5:
-		yyDollar = yyS[yypt-3 : yypt+1]
+		yyDollar = yyS[yypt-1 : yypt+1]
 //line parser.y:52
 		{
-			yyVAL.entities = append(yyVAL.entities, yyDollar[1].entity)
+			yyVAL.entities = []Entity{yyDollar[1].entity}
 		}
 	case 6:
 		yyDollar = yyS[yypt-5 : yypt+1]

@@ -48,8 +48,8 @@ title: TITLE ':' STRING { $$ = $3; }
 		 ;
 
 // Entities are separated by newline.
-entities: entity { $$ = []Entity{$1}; }
-				| entity BREAK entities { $$ = append($$, $1); }
+entities: entities BREAK entity { $$ = append($$, $3); }
+				| entity { $$ = []Entity{$1}; }
 				;
 
 entity: LBRAC STRING RBRAC NEWLINE attributes { $$.name = $2; $$.attributes = $5; }

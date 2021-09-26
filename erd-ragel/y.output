@@ -48,16 +48,16 @@ state 5
 
 state 6
 	main:  title BREAK entities.    (2)
+	entities:  entities.BREAK entity 
 
+	BREAK  shift 10
 	.  reduce 2 (src line 39)
 
 
 state 7
-	entities:  entity.    (4)
-	entities:  entity.BREAK entities 
+	entities:  entity.    (5)
 
-	BREAK  shift 10
-	.  reduce 4 (src line 51)
+	.  reduce 5 (src line 52)
 
 
 state 8
@@ -74,13 +74,12 @@ state 9
 
 
 state 10
-	entities:  entity BREAK.entities 
+	entities:  entities BREAK.entity 
 
 	LBRAC  shift 8
 	.  error
 
-	entity  goto 7
-	entities  goto 12
+	entity  goto 12
 
 state 11
 	entity:  LBRAC STRING.RBRAC NEWLINE attributes 
@@ -90,9 +89,9 @@ state 11
 
 
 state 12
-	entities:  entity BREAK entities.    (5)
+	entities:  entities BREAK entity.    (4)
 
-	.  reduce 5 (src line 52)
+	.  reduce 4 (src line 51)
 
 
 state 13
@@ -150,11 +149,11 @@ state 19
 10 grammar rules, 20/16000 states
 0 shift/reduce, 0 reduce/reduce conflicts reported
 56 working sets used
-memory: parser 9/240000
+memory: parser 8/240000
 0 extra closures
 13 shift entries, 1 exceptions
 8 goto entries
-2 entries saved by goto default
+1 entries saved by goto default
 Optimizer space used: output 20/240000
 20 table entries, 1 zero
 maximum spread: 10, maximum offset: 18
