@@ -1,0 +1,80 @@
+
+state 0
+	$accept: .file $end 
+
+	school  shift 3
+	.  error
+
+	student  goto 2
+	file  goto 1
+
+state 1
+	$accept:  file.$end 
+	file:  file.student 
+
+	$end  accept
+	school  shift 3
+	.  error
+
+	student  goto 4
+
+state 2
+	file:  student.    (1)
+
+	.  reduce 1 (src line 34)
+
+
+state 3
+	student:  school.group name modules 
+
+	group  shift 5
+	.  error
+
+
+state 4
+	file:  file student.    (2)
+
+	.  reduce 2 (src line 35)
+
+
+state 5
+	student:  school group.name modules 
+
+	name  shift 6
+	.  error
+
+
+state 6
+	student:  school group name.modules 
+	modules: .    (4)
+
+	.  reduce 4 (src line 47)
+
+	modules  goto 7
+
+state 7
+	student:  school group name modules.    (3)
+	modules:  modules.module 
+
+	module  shift 8
+	.  reduce 3 (src line 38)
+
+
+state 8
+	modules:  modules module.    (5)
+
+	.  reduce 5 (src line 48)
+
+
+7 terminals, 4 nonterminals
+6 grammar rules, 9/16000 states
+0 shift/reduce, 0 reduce/reduce conflicts reported
+53 working sets used
+memory: parser 3/240000
+0 extra closures
+5 shift entries, 1 exceptions
+4 goto entries
+0 entries saved by goto default
+Optimizer space used: output 8/240000
+8 table entries, 0 zero
+maximum spread: 7, maximum offset: 7
