@@ -75,11 +75,11 @@ var yyPgo = [...]int{
 }
 
 var yyR1 = [...]int{
-	0, 1, 2, 4, 4, 3, 5, 5, 6,
+	0, 1, 1, 2, 4, 4, 3, 5, 5, 6,
 }
 
 var yyR2 = [...]int{
-	0, 3, 3, 1, 3, 5, 1, 3, 1,
+	0, 1, 3, 3, 1, 3, 5, 1, 3, 1,
 }
 
 var yyChk = [...]int{
@@ -88,8 +88,8 @@ var yyChk = [...]int{
 }
 
 var yyDef = [...]int{
-	0, -2, 0, 0, 0, 0, 1, 3, 0, 2,
-	0, 0, 4, 0, 0, 5, 6, 8, 0, 7,
+	0, -2, 1, 0, 0, 0, 2, 4, 0, 3,
+	0, 0, 5, 0, 0, 6, 7, 9, 0, 8,
 }
 
 var yyTok1 = [...]int{
@@ -447,53 +447,60 @@ yydefault:
 	switch yynt {
 
 	case 1:
-		yyDollar = yyS[yypt-3 : yypt+1]
+		yyDollar = yyS[yypt-1 : yypt+1]
 //line parser.y:35
+		{
+			yyVAL.result.title = yyDollar[1].title
+			setResult(yylex, yyVAL.result)
+		}
+	case 2:
+		yyDollar = yyS[yypt-3 : yypt+1]
+//line parser.y:40
 		{
 			yyVAL.result.title = yyDollar[1].title
 			yyVAL.result.entities = yyDollar[3].entities
 			setResult(yylex, yyVAL.result)
 		}
-	case 2:
-		yyDollar = yyS[yypt-3 : yypt+1]
-//line parser.y:42
-		{
-			yyVAL.title = yyDollar[3].str
-		}
 	case 3:
-		yyDollar = yyS[yypt-1 : yypt+1]
-//line parser.y:46
-		{
-			yyVAL.entities = []Entity{yyDollar[1].entity}
-		}
-	case 4:
 		yyDollar = yyS[yypt-3 : yypt+1]
 //line parser.y:47
 		{
-			yyVAL.entities = append(yyVAL.entities, yyDollar[1].entity)
+			yyVAL.title = yyDollar[3].str
+		}
+	case 4:
+		yyDollar = yyS[yypt-1 : yypt+1]
+//line parser.y:51
+		{
+			yyVAL.entities = []Entity{yyDollar[1].entity}
 		}
 	case 5:
+		yyDollar = yyS[yypt-3 : yypt+1]
+//line parser.y:52
+		{
+			yyVAL.entities = append(yyVAL.entities, yyDollar[1].entity)
+		}
+	case 6:
 		yyDollar = yyS[yypt-5 : yypt+1]
-//line parser.y:50
+//line parser.y:55
 		{
 			yyVAL.entity.name = yyDollar[2].str
 			yyVAL.entity.attributes = yyDollar[5].attributes
 		}
-	case 6:
+	case 7:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line parser.y:54
+//line parser.y:59
 		{
 			yyVAL.attributes = []string{yyDollar[1].attribute}
 		}
-	case 7:
+	case 8:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line parser.y:55
+//line parser.y:60
 		{
 			yyVAL.attributes = append(yyVAL.attributes, yyDollar[1].attribute)
 		}
-	case 8:
+	case 9:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line parser.y:58
+//line parser.y:63
 		{
 			yyVAL.attribute = yyDollar[1].str
 		}

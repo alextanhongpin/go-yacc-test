@@ -31,7 +31,12 @@ func setResult(l yyLexer, val Erd) {
 
 %%
 
-main: title BREAK entities
+main: title
+		{
+			$$.title = $1;
+			setResult(yylex, $$);
+		}
+		| title BREAK entities
 		{
 			$$.title = $1;
 			$$.entities = $3;

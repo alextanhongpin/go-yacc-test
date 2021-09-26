@@ -16,10 +16,11 @@ state 1
 
 
 state 2
+	main:  title.    (1)
 	main:  title.BREAK entities 
 
 	BREAK  shift 4
-	.  error
+	.  reduce 1 (src line 34)
 
 
 state 3
@@ -46,17 +47,17 @@ state 5
 
 
 state 6
-	main:  title BREAK entities.    (1)
+	main:  title BREAK entities.    (2)
 
-	.  reduce 1 (src line 34)
+	.  reduce 2 (src line 39)
 
 
 state 7
-	entities:  entity.    (3)
+	entities:  entity.    (4)
 	entities:  entity.BREAK entities 
 
 	BREAK  shift 10
-	.  reduce 3 (src line 46)
+	.  reduce 4 (src line 51)
 
 
 state 8
@@ -67,9 +68,9 @@ state 8
 
 
 state 9
-	title:  TITLE ':' STRING.    (2)
+	title:  TITLE ':' STRING.    (3)
 
-	.  reduce 2 (src line 42)
+	.  reduce 3 (src line 47)
 
 
 state 10
@@ -89,9 +90,9 @@ state 11
 
 
 state 12
-	entities:  entity BREAK entities.    (4)
+	entities:  entity BREAK entities.    (5)
 
-	.  reduce 4 (src line 47)
+	.  reduce 5 (src line 52)
 
 
 state 13
@@ -111,23 +112,23 @@ state 14
 	attribute  goto 16
 
 state 15
-	entity:  LBRAC STRING RBRAC NEWLINE attributes.    (5)
+	entity:  LBRAC STRING RBRAC NEWLINE attributes.    (6)
 
-	.  reduce 5 (src line 50)
+	.  reduce 6 (src line 55)
 
 
 state 16
-	attributes:  attribute.    (6)
+	attributes:  attribute.    (7)
 	attributes:  attribute.NEWLINE attributes 
 
 	NEWLINE  shift 18
-	.  reduce 6 (src line 54)
+	.  reduce 7 (src line 59)
 
 
 state 17
-	attribute:  STRING.    (8)
+	attribute:  STRING.    (9)
 
-	.  reduce 8 (src line 58)
+	.  reduce 9 (src line 63)
 
 
 state 18
@@ -140,13 +141,13 @@ state 18
 	attribute  goto 16
 
 state 19
-	attributes:  attribute NEWLINE attributes.    (7)
+	attributes:  attribute NEWLINE attributes.    (8)
 
-	.  reduce 7 (src line 55)
+	.  reduce 8 (src line 60)
 
 
 10 terminals, 7 nonterminals
-9 grammar rules, 20/16000 states
+10 grammar rules, 20/16000 states
 0 shift/reduce, 0 reduce/reduce conflicts reported
 56 working sets used
 memory: parser 9/240000
