@@ -1,37 +1,59 @@
 %{
 package main
 
-func setResult(l yyLexer, val int) {
+func setResult(l yyLexer, val Erd) {
 	l.(*Lexer).result = val
 }
 %}
 
 %union {
-	result int
+	str string
+	title string
+	attributes []string
+	attribute string
+	entity Entity
+	entities []Entity
+	result Erd
 }
 
-%token TITLE TITLE_VALUE FIELD ENTITY NEWLINE
+%token LBRAC RBRAC TITLE STRING NEWLINE BREAK
+
+
+%type <result> main
+%type <str> STRING
+%type <title> title
+%type <entity> entity
+%type <entities> entities
+%type <attributes> attributes
+%type <attribute> attribute
 
 %start main
 
 %%
 
-main: title NEWLINE entities
+main: title BREAK entities
 		{
-			setResult(yylex, 0);
+			$$.title = $1;
+			$$.entities = $3;
+			setResult(yylex, $$);
 		}
 		;
 
-
-title: TITLE ':' TITLE_VALUE
+title: TITLE ':' STRING { $$ = $3; }
 		 ;
 
-entities: entity
-				| entity entities
+// Entities are separated by newline.
+entities: entity { $$ = []Entity{$1}; }
+				| entity BREAK entities { $$ = append($$, $1); }
 				;
 
-entity: '[' ENTITY ']' attributes
+entity: LBRAC STRING RBRAC NEWLINE attributes { $$.name = $2; $$.attributes = $5; }
 			;
 
-attributes:
-					| attributes FIELD;
+// Attributes are separated by newline.
+attributes: attribute { $$ = []string{$1}; }
+					| attribute NEWLINE attributes { $$ = append($$, $1); }
+					;
+
+attribute: STRING { $$ = $1; }
+				 ;

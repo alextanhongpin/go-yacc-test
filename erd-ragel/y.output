@@ -16,108 +16,144 @@ state 1
 
 
 state 2
-	main:  title.NEWLINE entities 
+	main:  title.BREAK entities 
 
-	NEWLINE  shift 4
+	BREAK  shift 4
 	.  error
 
 
 state 3
-	title:  TITLE.':' TITLE_VALUE 
+	title:  TITLE.':' STRING 
 
 	':'  shift 5
 	.  error
 
 
 state 4
-	main:  title NEWLINE.entities 
+	main:  title BREAK.entities 
 
-	'['  shift 8
+	LBRAC  shift 8
 	.  error
 
-	entities  goto 6
 	entity  goto 7
+	entities  goto 6
 
 state 5
-	title:  TITLE ':'.TITLE_VALUE 
+	title:  TITLE ':'.STRING 
 
-	TITLE_VALUE  shift 9
+	STRING  shift 9
 	.  error
 
 
 state 6
-	main:  title NEWLINE entities.    (1)
+	main:  title BREAK entities.    (1)
 
-	.  reduce 1 (src line 19)
+	.  reduce 1 (src line 34)
 
 
 state 7
 	entities:  entity.    (3)
-	entities:  entity.entities 
+	entities:  entity.BREAK entities 
 
-	'['  shift 8
-	.  reduce 3 (src line 29)
+	BREAK  shift 10
+	.  reduce 3 (src line 46)
 
-	entities  goto 10
-	entity  goto 7
 
 state 8
-	entity:  '['.ENTITY ']' attributes 
+	entity:  LBRAC.STRING RBRAC NEWLINE attributes 
 
-	ENTITY  shift 11
+	STRING  shift 11
 	.  error
 
 
 state 9
-	title:  TITLE ':' TITLE_VALUE.    (2)
+	title:  TITLE ':' STRING.    (2)
 
-	.  reduce 2 (src line 26)
+	.  reduce 2 (src line 42)
 
 
 state 10
-	entities:  entity entities.    (4)
+	entities:  entity BREAK.entities 
 
-	.  reduce 4 (src line 30)
+	LBRAC  shift 8
+	.  error
 
+	entity  goto 7
+	entities  goto 12
 
 state 11
-	entity:  '[' ENTITY.']' attributes 
+	entity:  LBRAC STRING.RBRAC NEWLINE attributes 
 
-	']'  shift 12
+	RBRAC  shift 13
 	.  error
 
 
 state 12
-	entity:  '[' ENTITY ']'.attributes 
-	attributes: .    (6)
+	entities:  entity BREAK entities.    (4)
 
-	.  reduce 6 (src line 36)
+	.  reduce 4 (src line 47)
 
-	attributes  goto 13
 
 state 13
-	entity:  '[' ENTITY ']' attributes.    (5)
-	attributes:  attributes.FIELD 
+	entity:  LBRAC STRING RBRAC.NEWLINE attributes 
 
-	FIELD  shift 14
-	.  reduce 5 (src line 33)
+	NEWLINE  shift 14
+	.  error
 
 
 state 14
-	attributes:  attributes FIELD.    (7)
+	entity:  LBRAC STRING RBRAC NEWLINE.attributes 
 
-	.  reduce 7 (src line 37)
+	STRING  shift 17
+	.  error
+
+	attributes  goto 15
+	attribute  goto 16
+
+state 15
+	entity:  LBRAC STRING RBRAC NEWLINE attributes.    (5)
+
+	.  reduce 5 (src line 50)
 
 
-11 terminals, 6 nonterminals
-8 grammar rules, 15/16000 states
+state 16
+	attributes:  attribute.    (6)
+	attributes:  attribute.NEWLINE attributes 
+
+	NEWLINE  shift 18
+	.  reduce 6 (src line 54)
+
+
+state 17
+	attribute:  STRING.    (8)
+
+	.  reduce 8 (src line 58)
+
+
+state 18
+	attributes:  attribute NEWLINE.attributes 
+
+	STRING  shift 17
+	.  error
+
+	attributes  goto 19
+	attribute  goto 16
+
+state 19
+	attributes:  attribute NEWLINE attributes.    (7)
+
+	.  reduce 7 (src line 55)
+
+
+10 terminals, 7 nonterminals
+9 grammar rules, 20/16000 states
 0 shift/reduce, 0 reduce/reduce conflicts reported
-55 working sets used
-memory: parser 6/240000
+56 working sets used
+memory: parser 9/240000
 0 extra closures
-9 shift entries, 1 exceptions
-6 goto entries
-1 entries saved by goto default
-Optimizer space used: output 14/240000
-14 table entries, 0 zero
-maximum spread: 11, maximum offset: 11
+13 shift entries, 1 exceptions
+8 goto entries
+2 entries saved by goto default
+Optimizer space used: output 20/240000
+20 table entries, 1 zero
+maximum spread: 10, maximum offset: 18

@@ -1,0 +1,11 @@
+title: Hello world
+
+[Users]
+*id, uuid (pk)
+name, text
+age, text
+
+[Books]
+*id, uuid (pk)
+title, text
+author, text

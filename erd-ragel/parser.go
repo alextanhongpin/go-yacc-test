@@ -7,34 +7,40 @@ import __yyfmt__ "fmt"
 
 //line parser.y:2
 
-func setResult(l yyLexer, val int) {
+func setResult(l yyLexer, val Erd) {
 	l.(*Lexer).result = val
 }
 
 //line parser.y:9
 type yySymType struct {
-	yys    int
-	result int
+	yys        int
+	str        string
+	title      string
+	attributes []string
+	attribute  string
+	entity     Entity
+	entities   []Entity
+	result     Erd
 }
 
-const TITLE = 57346
-const TITLE_VALUE = 57347
-const FIELD = 57348
-const ENTITY = 57349
+const LBRAC = 57346
+const RBRAC = 57347
+const TITLE = 57348
+const STRING = 57349
 const NEWLINE = 57350
+const BREAK = 57351
 
 var yyToknames = [...]string{
 	"$end",
 	"error",
 	"$unk",
+	"LBRAC",
+	"RBRAC",
 	"TITLE",
-	"TITLE_VALUE",
-	"FIELD",
-	"ENTITY",
+	"STRING",
 	"NEWLINE",
+	"BREAK",
 	"':'",
-	"'['",
-	"']'",
 }
 
 var yyStatenames = [...]string{}
@@ -52,38 +58,38 @@ var yyExca = [...]int{
 
 const yyPrivate = 57344
 
-const yyLast = 14
+const yyLast = 20
 
 var yyAct = [...]int{
-	12, 8, 5, 4, 6, 11, 14, 9, 3, 13,
-	7, 2, 10, 1,
+	15, 6, 5, 10, 4, 18, 14, 17, 11, 9,
+	3, 13, 12, 8, 16, 7, 2, 1, 0, 19,
 }
 
 var yyPact = [...]int{
-	4, -1000, -5, -7, -9, 2, -1000, -9, -2, -1000,
-	-1000, -11, -1000, 0, -1000,
+	4, -1000, -5, -8, 9, 2, -1000, -6, 1, -1000,
+	9, 6, -1000, -2, 0, -1000, -3, -1000, 0, -1000,
 }
 
 var yyPgo = [...]int{
-	0, 13, 11, 4, 10, 9,
+	0, 17, 16, 15, 1, 0, 14,
 }
 
 var yyR1 = [...]int{
-	0, 1, 2, 3, 3, 4, 5, 5,
+	0, 1, 2, 4, 4, 3, 5, 5, 6,
 }
 
 var yyR2 = [...]int{
-	0, 3, 3, 1, 2, 4, 0, 2,
+	0, 3, 3, 1, 3, 5, 1, 3, 1,
 }
 
 var yyChk = [...]int{
-	-1000, -1, -2, 4, 8, 9, -3, -4, 10, 5,
-	-3, 7, 11, -5, 6,
+	-1000, -1, -2, 6, 9, 10, -4, -3, 4, 7,
+	9, 7, -4, 5, 8, -5, -6, 7, 8, -5,
 }
 
 var yyDef = [...]int{
 	0, -2, 0, 0, 0, 0, 1, 3, 0, 2,
-	4, 0, 6, 5, 7,
+	0, 0, 4, 0, 0, 5, 6, 8, 0, 7,
 }
 
 var yyTok1 = [...]int{
@@ -92,15 +98,11 @@ var yyTok1 = [...]int{
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 3, 3, 3, 3, 3, 3, 3, 9, 3,
-	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 10, 3, 11,
+	3, 3, 3, 3, 3, 3, 3, 3, 10,
 }
 
 var yyTok2 = [...]int{
-	2, 3, 4, 5, 6, 7, 8,
+	2, 3, 4, 5, 6, 7, 8, 9,
 }
 
 var yyTok3 = [...]int{
@@ -446,9 +448,54 @@ yydefault:
 
 	case 1:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line parser.y:20
+//line parser.y:35
 		{
-			setResult(yylex, 0)
+			yyVAL.result.title = yyDollar[1].title
+			yyVAL.result.entities = yyDollar[3].entities
+			setResult(yylex, yyVAL.result)
+		}
+	case 2:
+		yyDollar = yyS[yypt-3 : yypt+1]
+//line parser.y:42
+		{
+			yyVAL.title = yyDollar[3].str
+		}
+	case 3:
+		yyDollar = yyS[yypt-1 : yypt+1]
+//line parser.y:46
+		{
+			yyVAL.entities = []Entity{yyDollar[1].entity}
+		}
+	case 4:
+		yyDollar = yyS[yypt-3 : yypt+1]
+//line parser.y:47
+		{
+			yyVAL.entities = append(yyVAL.entities, yyDollar[1].entity)
+		}
+	case 5:
+		yyDollar = yyS[yypt-5 : yypt+1]
+//line parser.y:50
+		{
+			yyVAL.entity.name = yyDollar[2].str
+			yyVAL.entity.attributes = yyDollar[5].attributes
+		}
+	case 6:
+		yyDollar = yyS[yypt-1 : yypt+1]
+//line parser.y:54
+		{
+			yyVAL.attributes = []string{yyDollar[1].attribute}
+		}
+	case 7:
+		yyDollar = yyS[yypt-3 : yypt+1]
+//line parser.y:55
+		{
+			yyVAL.attributes = append(yyVAL.attributes, yyDollar[1].attribute)
+		}
+	case 8:
+		yyDollar = yyS[yypt-1 : yypt+1]
+//line parser.y:58
+		{
+			yyVAL.attribute = yyDollar[1].str
 		}
 	}
 	goto yystack /* stack new state and value */
