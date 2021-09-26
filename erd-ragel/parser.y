@@ -1,45 +1,37 @@
 %{
 package main
 
-func setResult(l yyLexer, val string) {
+func setResult(l yyLexer, val int) {
 	l.(*Lexer).result = val
 }
 %}
 
 %union {
-	title string
-	entity string
-	erd string
+	result int
 }
 
-%token <title> TITLE TITLE_VALUE
-%token <entity> ENTITY
-
-%type <erd> erd
-%type <entity> entity
+%token TITLE TITLE_VALUE FIELD ENTITY NEWLINE
 
 %start main
 
 %%
 
-main:
-	erd
-	{
-		setResult(yylex, $1)
-	}
+main: title NEWLINE entities
+		{
+			setResult(yylex, 0);
+		}
+		;
 
-erd:
-	TITLE ':' TITLE_VALUE
-	{
-		$$ = $3;
-	}
-| TITLE ':' TITLE_VALUE entity
-	{
-		$$ = $3;
-	}
 
-entity:
-	'[' ENTITY ']'
-	{
-		$$ = $2;
-	}
+title: TITLE ':' TITLE_VALUE
+		 ;
+
+entities: entity
+				| entity entities
+				;
+
+entity: '[' ENTITY ']' attributes
+			;
+
+attributes:
+					| attributes FIELD;

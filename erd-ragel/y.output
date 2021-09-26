@@ -5,8 +5,8 @@ state 0
 	TITLE  shift 3
 	.  error
 
-	erd  goto 2
 	main  goto 1
+	title  goto 2
 
 state 1
 	$accept:  main.$end 
@@ -16,71 +16,108 @@ state 1
 
 
 state 2
-	main:  erd.    (1)
+	main:  title.NEWLINE entities 
 
-	.  reduce 1 (src line 25)
+	NEWLINE  shift 4
+	.  error
 
 
 state 3
-	erd:  TITLE.':' TITLE_VALUE 
-	erd:  TITLE.':' TITLE_VALUE entity 
+	title:  TITLE.':' TITLE_VALUE 
 
-	':'  shift 4
+	':'  shift 5
 	.  error
 
 
 state 4
-	erd:  TITLE ':'.TITLE_VALUE 
-	erd:  TITLE ':'.TITLE_VALUE entity 
+	main:  title NEWLINE.entities 
 
-	TITLE_VALUE  shift 5
+	'['  shift 8
+	.  error
+
+	entities  goto 6
+	entity  goto 7
+
+state 5
+	title:  TITLE ':'.TITLE_VALUE 
+
+	TITLE_VALUE  shift 9
 	.  error
 
 
-state 5
-	erd:  TITLE ':' TITLE_VALUE.    (2)
-	erd:  TITLE ':' TITLE_VALUE.entity 
-
-	'['  shift 7
-	.  reduce 2 (src line 31)
-
-	entity  goto 6
-
 state 6
-	erd:  TITLE ':' TITLE_VALUE entity.    (3)
+	main:  title NEWLINE entities.    (1)
 
-	.  reduce 3 (src line 36)
+	.  reduce 1 (src line 19)
 
 
 state 7
-	entity:  '['.ENTITY ']' 
+	entities:  entity.    (3)
+	entities:  entity.entities 
 
-	ENTITY  shift 8
-	.  error
+	'['  shift 8
+	.  reduce 3 (src line 29)
 
+	entities  goto 10
+	entity  goto 7
 
 state 8
-	entity:  '[' ENTITY.']' 
+	entity:  '['.ENTITY ']' attributes 
 
-	']'  shift 9
+	ENTITY  shift 11
 	.  error
 
 
 state 9
-	entity:  '[' ENTITY ']'.    (4)
+	title:  TITLE ':' TITLE_VALUE.    (2)
 
-	.  reduce 4 (src line 41)
+	.  reduce 2 (src line 26)
 
 
-9 terminals, 4 nonterminals
-5 grammar rules, 10/16000 states
+state 10
+	entities:  entity entities.    (4)
+
+	.  reduce 4 (src line 30)
+
+
+state 11
+	entity:  '[' ENTITY.']' attributes 
+
+	']'  shift 12
+	.  error
+
+
+state 12
+	entity:  '[' ENTITY ']'.attributes 
+	attributes: .    (6)
+
+	.  reduce 6 (src line 36)
+
+	attributes  goto 13
+
+state 13
+	entity:  '[' ENTITY ']' attributes.    (5)
+	attributes:  attributes.FIELD 
+
+	FIELD  shift 14
+	.  reduce 5 (src line 33)
+
+
+state 14
+	attributes:  attributes FIELD.    (7)
+
+	.  reduce 7 (src line 37)
+
+
+11 terminals, 6 nonterminals
+8 grammar rules, 15/16000 states
 0 shift/reduce, 0 reduce/reduce conflicts reported
-53 working sets used
-memory: parser 2/240000
+55 working sets used
+memory: parser 6/240000
 0 extra closures
-6 shift entries, 1 exceptions
-3 goto entries
-0 entries saved by goto default
-Optimizer space used: output 9/240000
-9 table entries, 0 zero
-maximum spread: 9, maximum offset: 9
+9 shift entries, 1 exceptions
+6 goto entries
+1 entries saved by goto default
+Optimizer space used: output 14/240000
+14 table entries, 0 zero
+maximum spread: 11, maximum offset: 11

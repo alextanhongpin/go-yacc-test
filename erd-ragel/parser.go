@@ -7,21 +7,21 @@ import __yyfmt__ "fmt"
 
 //line parser.y:2
 
-func setResult(l yyLexer, val string) {
+func setResult(l yyLexer, val int) {
 	l.(*Lexer).result = val
 }
 
 //line parser.y:9
 type yySymType struct {
 	yys    int
-	title  string
-	entity string
-	erd    string
+	result int
 }
 
 const TITLE = 57346
 const TITLE_VALUE = 57347
-const ENTITY = 57348
+const FIELD = 57348
+const ENTITY = 57349
+const NEWLINE = 57350
 
 var yyToknames = [...]string{
 	"$end",
@@ -29,7 +29,9 @@ var yyToknames = [...]string{
 	"$unk",
 	"TITLE",
 	"TITLE_VALUE",
+	"FIELD",
 	"ENTITY",
+	"NEWLINE",
 	"':'",
 	"'['",
 	"']'",
@@ -50,34 +52,38 @@ var yyExca = [...]int{
 
 const yyPrivate = 57344
 
-const yyLast = 9
+const yyLast = 14
 
 var yyAct = [...]int{
-	9, 7, 4, 8, 5, 3, 1, 6, 2,
+	12, 8, 5, 4, 6, 11, 14, 9, 3, 13,
+	7, 2, 10, 1,
 }
 
 var yyPact = [...]int{
-	1, -1000, -1000, -5, -1, -7, -1000, -3, -9, -1000,
+	4, -1000, -5, -7, -9, 2, -1000, -9, -2, -1000,
+	-1000, -11, -1000, 0, -1000,
 }
 
 var yyPgo = [...]int{
-	0, 8, 7, 6,
+	0, 13, 11, 4, 10, 9,
 }
 
 var yyR1 = [...]int{
-	0, 3, 1, 1, 2,
+	0, 1, 2, 3, 3, 4, 5, 5,
 }
 
 var yyR2 = [...]int{
-	0, 1, 3, 4, 3,
+	0, 3, 3, 1, 2, 4, 0, 2,
 }
 
 var yyChk = [...]int{
-	-1000, -3, -1, 4, 7, 5, -2, 8, 6, 9,
+	-1000, -1, -2, 4, 8, 9, -3, -4, 10, 5,
+	-3, 7, 11, -5, 6,
 }
 
 var yyDef = [...]int{
-	0, -2, 1, 0, 0, 2, 3, 0, 0, 4,
+	0, -2, 0, 0, 0, 0, 1, 3, 0, 2,
+	4, 0, 6, 5, 7,
 }
 
 var yyTok1 = [...]int{
@@ -86,15 +92,15 @@ var yyTok1 = [...]int{
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 3, 3, 3, 3, 3, 3, 3, 7, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 9, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 8, 3, 9,
+	3, 10, 3, 11,
 }
 
 var yyTok2 = [...]int{
-	2, 3, 4, 5, 6,
+	2, 3, 4, 5, 6, 7, 8,
 }
 
 var yyTok3 = [...]int{
@@ -439,28 +445,10 @@ yydefault:
 	switch yynt {
 
 	case 1:
-		yyDollar = yyS[yypt-1 : yypt+1]
-//line parser.y:27
-		{
-			setResult(yylex, yyDollar[1].erd)
-		}
-	case 2:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line parser.y:33
+//line parser.y:20
 		{
-			yyVAL.erd = yyDollar[3].title
-		}
-	case 3:
-		yyDollar = yyS[yypt-4 : yypt+1]
-//line parser.y:37
-		{
-			yyVAL.erd = yyDollar[3].title
-		}
-	case 4:
-		yyDollar = yyS[yypt-3 : yypt+1]
-//line parser.y:43
-		{
-			yyVAL.entity = yyDollar[2].entity
+			setResult(yylex, 0)
 		}
 	}
 	goto yystack /* stack new state and value */

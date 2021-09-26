@@ -8,9 +8,7 @@ import "log"
 func main() {
 	lexer := NewLexer([]byte(`title: hello world
 [Users]
-age, text (uuid)
-
-	`))
+age`))
 	log.Println(yyParse(lexer))
 	log.Println(lexer.result)
 }
