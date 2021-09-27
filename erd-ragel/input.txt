@@ -8,4 +8,6 @@ age, text
 [Books]
 *id, uuid (pk)
 title, text
-author, text
++author_id, text
+
+Users 1--* Books

@@ -11,11 +11,20 @@ package main
 type Erd struct {
 	title string
 	entities []Entity
+	relation Relation
+}
+
+type Relation struct {
+	from string
+	to string
+	fromCardinality string
+	toCardinality string
 }
 
 type Entity struct {
 	name string
 	attributes []string
+	relations []Relation
 }
 
 type Lexer struct {
@@ -41,22 +50,27 @@ func (l *Lexer) Error(msg string) {
 func (lex *Lexer) Lex(lval *yySymType) int {
 	eof := lex.pe
 	var tok int
+	yyErrorVerbose = true
 
 	%%{
 		title_name = 'title'i; # Case insensitive;
-		string = ('*'|'+')?( alnum | ' ' | ',' | '(' | ')' )+;
+		char = (alpha | ',' | '(' | ')' | '_' );
+		chars = alpha(char|' ')*char;
+		quoted_string = '`' (alpha | ',' | '(' | ')' | '_'| ' ')+ '`';
+		string = (('*'|'+')?(chars|quoted_string));
 		break = [\r\n]{2,};
 		newline = [\r\n];
+		cardinality = (' '('?'|'*'|'1'|'+')|('?'|'*'|'1'|'+')' ');
 
 		main := |*
+			cardinality => { println("cardinality", lex.string()); lval.str = lex.string(); tok = CARDINALITY; fbreak; };
 			title_name => { tok = TITLE; fbreak; };
 			string => { lval.str = lex.string(); println("string:", lex.string()); tok = STRING; fbreak; };
 			break => { println("break"); tok = BREAK; fbreak; };
 			# newline => { println("newline", lex.te, eof); if lex.te == eof { fbreak; } else { tok = NEWLINE; } };
 			# NOTE: We skip the last EOF if exists ...
-			 newline => { println("newline", lex.te, eof); if lex.te != eof { tok = NEWLINE }; fbreak; };
-			'[' => { tok = LBRAC; fbreak; };
-			']' => { tok = RBRAC; fbreak; };
+			newline => { println("newline", lex.te, eof); if lex.te != eof { tok = NEWLINE }; fbreak; };
+			' ';
 			any => { println(string(lex.data[lex.ts])); tok = int(lex.data[lex.ts]); fbreak; };
 		*|;
 

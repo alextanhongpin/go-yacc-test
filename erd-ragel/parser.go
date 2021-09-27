@@ -20,15 +20,18 @@ type yySymType struct {
 	attribute  string
 	entity     Entity
 	entities   []Entity
+	relation   Relation
 	result     Erd
 }
 
 const LBRAC = 57346
 const RBRAC = 57347
 const TITLE = 57348
-const STRING = 57349
-const NEWLINE = 57350
-const BREAK = 57351
+const CARDINALITY = 57349
+const STRING = 57350
+const QUOTED_STRING = 57351
+const NEWLINE = 57352
+const BREAK = 57353
 
 var yyToknames = [...]string{
 	"$end",
@@ -37,10 +40,15 @@ var yyToknames = [...]string{
 	"LBRAC",
 	"RBRAC",
 	"TITLE",
+	"CARDINALITY",
 	"STRING",
+	"QUOTED_STRING",
 	"NEWLINE",
 	"BREAK",
 	"':'",
+	"'-'",
+	"'['",
+	"']'",
 }
 
 var yyStatenames = [...]string{}
@@ -58,38 +66,44 @@ var yyExca = [...]int{
 
 const yyPrivate = 57344
 
-const yyLast = 20
+const yyLast = 27
 
 var yyAct = [...]int{
-	15, 7, 5, 10, 4, 18, 14, 17, 11, 9,
-	3, 13, 12, 8, 16, 6, 2, 1, 0, 19,
+	19, 15, 14, 8, 22, 18, 7, 5, 8, 10,
+	4, 23, 17, 26, 21, 11, 9, 13, 24, 16,
+	3, 12, 20, 6, 25, 2, 1,
 }
 
 var yyPact = [...]int{
-	4, -1000, -5, -8, 9, 2, -6, -1000, 1, -1000,
-	9, 6, -1000, -2, 0, -1000, -3, -1000, 0, -1000,
+	14, -1000, -1, -5, -11, 8, -2, -1000, 7, -1000,
+	-6, -14, -1000, -1000, 12, 2, -8, 6, -9, -1000,
+	1, -1000, 11, 6, 5, -1000, -1000,
 }
 
 var yyPgo = [...]int{
-	0, 17, 16, 1, 15, 0, 14,
+	0, 26, 25, 6, 23, 0, 22, 21,
 }
 
 var yyR1 = [...]int{
-	0, 1, 1, 2, 4, 4, 3, 5, 5, 6,
+	0, 1, 1, 2, 7, 4, 4, 3, 5, 5,
+	6,
 }
 
 var yyR2 = [...]int{
-	0, 1, 3, 3, 3, 1, 5, 1, 3, 1,
+	0, 1, 5, 3, 6, 3, 1, 5, 1, 3,
+	1,
 }
 
 var yyChk = [...]int{
-	-1000, -1, -2, 6, 9, 10, -4, -3, 4, 7,
-	9, 7, -3, 5, 8, -5, -6, 7, 8, -5,
+	-1000, -1, -2, 6, 11, 12, -4, -3, 14, 8,
+	11, 8, -7, -3, 8, 15, 7, 10, 13, -5,
+	-6, 8, 13, 10, 7, -5, 8,
 }
 
 var yyDef = [...]int{
-	0, -2, 1, 0, 0, 0, 2, 5, 0, 3,
-	0, 0, 4, 0, 0, 6, 7, 9, 0, 8,
+	0, -2, 1, 0, 0, 0, 0, 6, 0, 3,
+	0, 0, 2, 5, 0, 0, 0, 0, 0, 7,
+	8, 10, 0, 0, 0, 9, 4,
 }
 
 var yyTok1 = [...]int{
@@ -97,12 +111,16 @@ var yyTok1 = [...]int{
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 13, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 12, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 3, 3, 3, 3, 3, 3, 3, 10,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 14, 3, 15,
 }
 
 var yyTok2 = [...]int{
-	2, 3, 4, 5, 6, 7, 8, 9,
+	2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
 }
 
 var yyTok3 = [...]int{
@@ -448,57 +466,67 @@ yydefault:
 
 	case 1:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line parser.y:35
+//line parser.y:36
 		{
 			yyVAL.result.title = yyDollar[1].title
 			setResult(yylex, yyVAL.result)
 		}
 	case 2:
-		yyDollar = yyS[yypt-3 : yypt+1]
-//line parser.y:40
+		yyDollar = yyS[yypt-5 : yypt+1]
+//line parser.y:41
 		{
 			yyVAL.result.title = yyDollar[1].title
 			yyVAL.result.entities = yyDollar[3].entities
+			yyVAL.result.relation = yyDollar[5].relation
 			setResult(yylex, yyVAL.result)
 		}
 	case 3:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line parser.y:47
+//line parser.y:49
 		{
 			yyVAL.title = yyDollar[3].str
 		}
 	case 4:
-		yyDollar = yyS[yypt-3 : yypt+1]
+		yyDollar = yyS[yypt-6 : yypt+1]
 //line parser.y:51
+		{
+			yyVAL.relation.from = yyDollar[1].str
+			yyVAL.relation.fromCardinality = yyDollar[2].str
+			yyVAL.relation.toCardinality = yyDollar[5].str
+			yyVAL.relation.to = yyDollar[6].str
+		}
+	case 5:
+		yyDollar = yyS[yypt-3 : yypt+1]
+//line parser.y:54
 		{
 			yyVAL.entities = append(yyVAL.entities, yyDollar[3].entity)
 		}
-	case 5:
+	case 6:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line parser.y:52
+//line parser.y:55
 		{
 			yyVAL.entities = []Entity{yyDollar[1].entity}
 		}
-	case 6:
+	case 7:
 		yyDollar = yyS[yypt-5 : yypt+1]
-//line parser.y:55
+//line parser.y:57
 		{
 			yyVAL.entity.name = yyDollar[2].str
 			yyVAL.entity.attributes = yyDollar[5].attributes
 		}
-	case 7:
+	case 8:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line parser.y:59
+//line parser.y:60
 		{
 			yyVAL.attributes = []string{yyDollar[1].attribute}
 		}
-	case 8:
+	case 9:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line parser.y:60
+//line parser.y:61
 		{
 			yyVAL.attributes = append(yyVAL.attributes, yyDollar[1].attribute)
 		}
-	case 9:
+	case 10:
 		yyDollar = yyS[yypt-1 : yypt+1]
 //line parser.y:63
 		{
