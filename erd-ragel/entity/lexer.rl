@@ -26,6 +26,8 @@ type Lexer struct {
 	data []byte
 	p, pe, cs int
 	ts, te, act int
+	stack []int
+	top int
 	result []Entity
 }
 
@@ -49,23 +51,36 @@ func (lex *Lexer) Lex(lval *yySymType) int {
 
 	%%{
 		word = (alpha | '_' );
-		quoted_string = '`' word+ '`';
-		string = (word+|'`' word+ '`'| '' word+ '' | " word+ ");
+		string = (word+|'`' word(word|' ')*word+ '`'| "'" word(word|' ')*word "'" | '"' word(word|' ')*word '"');
 		break = [\r\n]{2,};
-		newline = [\r\n];
+		nl = [\r\n];
 		attribute = (word | '-' | '(' | ')' | ' ' | ',')+;
+
+		prepush {
+			// Dynamically resize the stack.
+			for len(lex.stack) < lex.top + 1 {
+				lex.stack = append(lex.stack, 0)
+			}
+		}
+
+		entity := |*
+			string    { tok = STRING; lval.str = lex.string(); fbreak; };
+			'[' | ']' { tok = lex.token(); fbreak; };
+			nl 				{ fhold; fret; }; # Return to main without consuming token.
+		*|;
 
 		main := |*
 			'*' => { lval.str = lex.string(); println("*:", lex.string()); tok = PRIMARY_KEY; fbreak; };
 			'+' => { lval.str = lex.string(); println("+:", lex.string()); tok = FOREIGN_KEY; fbreak; };
 			string => { lval.str = lex.string(); println("string:", lex.string()); tok = STRING; fbreak; };
-			attribute => { lval.str = lex.string(); println("attribute:", lex.string()); tok = ATTRIBUTE; fbreak; };
-			break => { println("break"); tok = BREAK; fbreak; };
-			# newline => { println("newline", lex.te, eof); if lex.te == eof { fbreak; } else { tok = NEWLINE; } };
+			attribute => { lval.str = lex.string(); tok = ATTRIBUTE; fbreak; };
+			break => { tok = BREAK; fbreak; };
+			# nl => { println("nl", lex.te, eof); if lex.te == eof { fbreak; } else { tok = NEWLINE; } };
 			# NOTE: We skip the last EOF if exists ...
-			newline => { println("newline"); if lex.te != eof { tok = NEWLINE }; fbreak; };
+			nl => { if lex.te != eof { tok = NEWLINE }; fbreak; };
+			'[' { fhold; fcall entity; }; # On detecting the first bracket, handle the substate.
 			' ';
-			any => { println(string(lex.data[lex.ts])); tok = int(lex.data[lex.ts]); fbreak; };
+			any => { tok = lex.token(); fbreak; };
 		*|;
 
 		write exec;
@@ -77,4 +92,8 @@ func (lex *Lexer) Lex(lval *yySymType) int {
 
 func (lex *Lexer) string() string {
 	return string(lex.data[lex.ts:lex.te])
+}
+
+func (lex *Lexer) token() int {
+	return int(lex.data[lex.ts])
 }
