@@ -1,13 +1,9 @@
-title: Hello world
-
 [Users]
 *id, uuid (pk)
 name, text
 age, text
 
 [Books]
-*id, uuid (pk)
+*id, int (pk)
 title, text
 +author_id, text
-
-Users 1--* Books

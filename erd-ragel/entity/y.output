@@ -1,0 +1,152 @@
+
+state 0
+	$accept: .main $end 
+
+	'['  shift 4
+	.  error
+
+	main  goto 1
+	entities  goto 2
+	entity  goto 3
+
+state 1
+	$accept:  main.$end 
+
+	$end  accept
+	.  error
+
+
+state 2
+	main:  entities.    (1)
+	entities:  entities.BREAK entity 
+
+	BREAK  shift 5
+	.  reduce 1 (src line 31)
+
+
+state 3
+	entities:  entity.    (3)
+
+	.  reduce 3 (src line 41)
+
+
+state 4
+	entity:  '['.STRING ']' NEWLINE attributes 
+
+	STRING  shift 6
+	.  error
+
+
+state 5
+	entities:  entities BREAK.entity 
+
+	'['  shift 4
+	.  error
+
+	entity  goto 7
+
+state 6
+	entity:  '[' STRING.']' NEWLINE attributes 
+
+	']'  shift 8
+	.  error
+
+
+state 7
+	entities:  entities BREAK entity.    (2)
+
+	.  reduce 2 (src line 37)
+
+
+state 8
+	entity:  '[' STRING ']'.NEWLINE attributes 
+
+	NEWLINE  shift 9
+	.  error
+
+
+state 9
+	entity:  '[' STRING ']' NEWLINE.attributes 
+
+	PRIMARY_KEY  shift 12
+	FOREIGN_KEY  shift 13
+	ATTRIBUTE  shift 14
+	.  error
+
+	attribute  goto 11
+	attributes  goto 10
+
+state 10
+	entity:  '[' STRING ']' NEWLINE attributes.    (4)
+	attributes:  attributes.NEWLINE attribute 
+
+	NEWLINE  shift 15
+	.  reduce 4 (src line 46)
+
+
+state 11
+	attributes:  attribute.    (6)
+
+	.  reduce 6 (src line 57)
+
+
+state 12
+	attribute:  PRIMARY_KEY.ATTRIBUTE 
+
+	ATTRIBUTE  shift 16
+	.  error
+
+
+state 13
+	attribute:  FOREIGN_KEY.ATTRIBUTE 
+
+	ATTRIBUTE  shift 17
+	.  error
+
+
+state 14
+	attribute:  ATTRIBUTE.    (9)
+
+	.  reduce 9 (src line 72)
+
+
+state 15
+	attributes:  attributes NEWLINE.attribute 
+
+	PRIMARY_KEY  shift 12
+	FOREIGN_KEY  shift 13
+	ATTRIBUTE  shift 14
+	.  error
+
+	attribute  goto 18
+
+state 16
+	attribute:  PRIMARY_KEY ATTRIBUTE.    (7)
+
+	.  reduce 7 (src line 62)
+
+
+state 17
+	attribute:  FOREIGN_KEY ATTRIBUTE.    (8)
+
+	.  reduce 8 (src line 67)
+
+
+state 18
+	attributes:  attributes NEWLINE attribute.    (5)
+
+	.  reduce 5 (src line 53)
+
+
+12 terminals, 6 nonterminals
+10 grammar rules, 19/16000 states
+0 shift/reduce, 0 reduce/reduce conflicts reported
+55 working sets used
+memory: parser 8/240000
+0 extra closures
+15 shift entries, 1 exceptions
+7 goto entries
+0 entries saved by goto default
+Optimizer space used: output 18/240000
+18 table entries, 0 zero
+maximum spread: 12, maximum offset: 15
