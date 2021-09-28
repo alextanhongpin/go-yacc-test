@@ -19,9 +19,7 @@ type yySymType struct {
 	isForeign  bool
 	attribute  Attribute
 	attributes []Attribute
-	entities   []Entity
 	entity     Entity
-	relations  []Relation
 	relation   Relation
 
 	result Result
@@ -59,44 +57,40 @@ var yyExca = [...]int{
 
 const yyPrivate = 57344
 
-const yyLast = 29
+const yyLast = 20
 
 var yyAct = [...]int{
-	13, 12, 22, 16, 14, 15, 4, 21, 23, 8,
-	18, 17, 19, 16, 14, 15, 8, 5, 6, 12,
-	20, 10, 2, 1, 3, 10, 9, 7, 11,
+	8, 9, 12, 10, 11, 12, 10, 11, 16, 13,
+	15, 17, 5, 14, 1, 2, 4, 6, 3, 7,
 }
 
 var yyPact = [...]int{
-	13, -1000, 13, 13, -1000, -1000, -3, 6, -1000, 5,
-	-1000, 7, 16, -1000, 1, -4, -1000, 15, 7, -1000,
-	3, -1000, -1000, -1000,
+	7, -1000, 7, -1000, -1000, -4, -1000, -1, 9, -1000,
+	4, 2, -1000, -1000, 6, -1000, -1000, -1000,
 }
 
 var yyPgo = [...]int{
-	0, 0, 28, 22, 6, 17, 24, 23,
+	0, 1, 19, 18, 16, 14, 15,
 }
 
 var yyR1 = [...]int{
-	0, 7, 7, 7, 7, 3, 3, 4, 2, 2,
-	1, 1, 1, 6, 6, 5,
+	0, 6, 6, 5, 5, 3, 2, 2, 1, 1,
+	1, 4,
 }
 
 var yyR2 = [...]int{
-	0, 1, 1, 2, 2, 2, 1, 2, 2, 1,
-	2, 2, 1, 2, 1, 4,
+	0, 1, 1, 1, 2, 2, 2, 1, 2, 2,
+	1, 4,
 }
 
 var yyChk = [...]int{
-	-1000, -7, -3, -6, -4, -5, 5, -6, -4, -3,
-	-5, -2, 4, -1, 7, 8, 6, 5, 5, -1,
-	4, 6, 6, 5,
+	-1000, -5, -6, -3, -4, 5, -5, -2, 4, -1,
+	7, 8, 6, -1, 4, 6, 6, 5,
 }
 
 var yyDef = [...]int{
-	0, -2, 1, 2, 6, 14, 0, 3, 5, 4,
-	13, 7, 0, 9, 0, 0, 12, 0, 0, 8,
-	0, 10, 11, 15,
+	0, -2, 3, 1, 2, 0, 4, 5, 0, 7,
+	0, 0, 10, 6, 0, 8, 9, 11,
 }
 
 var yyTok1 = [...]int{
@@ -450,100 +444,72 @@ yydefault:
 
 	case 1:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line parser.y:38
+//line parser.y:34
 		{
-			yyVAL.result.entities = yyDollar[1].entities
-			setResult(yylex, yyVAL.result)
+			yyVAL.result.entities = []Entity{yyDollar[1].entity}
 		}
 	case 2:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line parser.y:43
+//line parser.y:38
 		{
-			yyVAL.result.relations = yyDollar[1].relations
-			setResult(yylex, yyVAL.result)
+			yyVAL.result.relations = []Relation{yyDollar[1].relation}
 		}
 	case 3:
-		yyDollar = yyS[yypt-2 : yypt+1]
-//line parser.y:48
+		yyDollar = yyS[yypt-1 : yypt+1]
+//line parser.y:43
 		{
-			yyVAL.result.entities = yyDollar[1].entities
-			yyVAL.result.relations = yyDollar[2].relations
-			setResult(yylex, yyVAL.result)
+			yyVAL.result = yyDollar[1].result
 		}
 	case 4:
 		yyDollar = yyS[yypt-2 : yypt+1]
-//line parser.y:54
+//line parser.y:47
 		{
-			yyVAL.result.relations = yyDollar[1].relations
-			yyVAL.result.entities = yyDollar[2].entities
+			yyVAL.result.relations = append(yyVAL.result.relations, yyDollar[2].result.relations...)
+			yyVAL.result.entities = append(yyVAL.result.entities, yyDollar[2].result.entities...)
 			setResult(yylex, yyVAL.result)
 		}
 	case 5:
 		yyDollar = yyS[yypt-2 : yypt+1]
-//line parser.y:61
-		{
-			yyVAL.entities = append(yyVAL.entities, yyDollar[2].entity)
-		}
-	case 6:
-		yyDollar = yyS[yypt-1 : yypt+1]
-//line parser.y:65
-		{
-			yyVAL.entities = []Entity{yyDollar[1].entity}
-		}
-	case 7:
-		yyDollar = yyS[yypt-2 : yypt+1]
-//line parser.y:70
+//line parser.y:54
 		{
 			yyVAL.entity.name = yyDollar[1].str
 			yyVAL.entity.attributes = yyDollar[2].attributes
 		}
-	case 8:
+	case 6:
 		yyDollar = yyS[yypt-2 : yypt+1]
-//line parser.y:76
+//line parser.y:60
 		{
 			yyVAL.attributes = append(yyVAL.attributes, yyDollar[2].attribute)
 		}
-	case 9:
+	case 7:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line parser.y:80
+//line parser.y:64
 		{
 			yyVAL.attributes = []Attribute{yyDollar[1].attribute}
 		}
-	case 10:
+	case 8:
 		yyDollar = yyS[yypt-2 : yypt+1]
-//line parser.y:85
+//line parser.y:69
 		{
 			yyVAL.attribute.isPrimary = true
 			yyVAL.attribute.field = yyDollar[2].str
 		}
-	case 11:
+	case 9:
 		yyDollar = yyS[yypt-2 : yypt+1]
-//line parser.y:90
+//line parser.y:74
 		{
 			yyVAL.attribute.isForeign = true
 			yyVAL.attribute.field = yyDollar[2].str
 		}
-	case 12:
+	case 10:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line parser.y:95
+//line parser.y:79
 		{
 			yyVAL.attribute.field = yyDollar[1].str
 		}
-	case 13:
-		yyDollar = yyS[yypt-2 : yypt+1]
-//line parser.y:100
-		{
-			yyVAL.relations = append(yyVAL.relations, yyDollar[2].relation)
-		}
-	case 14:
-		yyDollar = yyS[yypt-1 : yypt+1]
-//line parser.y:104
-		{
-			yyVAL.relations = []Relation{yyDollar[1].relation}
-		}
-	case 15:
+	case 11:
 		yyDollar = yyS[yypt-4 : yypt+1]
-//line parser.y:109
+//line parser.y:84
 		{
 			yyVAL.relation.from = yyDollar[1].str
 			yyVAL.relation.fromCardinality = yyDollar[3].str // Note that the cardinality is the opposite.

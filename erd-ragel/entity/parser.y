@@ -12,9 +12,7 @@ func setResult(l yyLexer, val Result) {
 	isForeign bool
 	attribute Attribute
 	attributes []Attribute
-	entities []Entity
 	entity Entity
-	relations []Relation
 	relation Relation
 
 	result Result
@@ -24,47 +22,33 @@ func setResult(l yyLexer, val Result) {
 
 %type <attribute> attribute
 %type <attributes> attributes
-%type <entities> entities
 %type <entity> entity
 %type <relation> relation
-%type <relations> relations
-%type <result> main
+%type <result> main body
 
 %start main
 
 %%
 
-main: entities
+body: entity
 		{
-			$$.entities = $1;
-			setResult(yylex, $$);
+			$$.entities = []Entity{$1};
 		}
-		| relations
+		| relation
 		{
-			$$.relations = $1;
-			setResult(yylex, $$);
-		}
-		| entities relations
-		{
-			$$.entities = $1;
-			$$.relations = $2;
-			setResult(yylex, $$);
-		}
-		| relations entities
-		{
-			$$.relations = $1;
-			$$.entities = $2;
-			setResult(yylex, $$);
+			$$.relations = []Relation{$1};
 		}
 
-entities: entities entity
-				{
-					$$ = append($$, $2);
-				}
-				| entity
-				{
-					$$ = []Entity{$1};
-				}
+main: body
+		{
+			$$ = $1;
+		}
+		| body main
+		{
+			$$.relations = append($$.relations, $2.relations...);
+			$$.entities = append($$.entities, $2.entities...);
+			setResult(yylex, $$);
+		}
 
 entity: ENTITY attributes
 			{
@@ -95,15 +79,6 @@ attribute: PRIMARY_KEY ATTRIBUTE
 				 {
 				 	 $$.field = $1;
 		 		 }
-
-relations: relations relation
-				 {
-				   $$ = append($$, $2);
-				 }
-				 | relation
-				 {
-					 $$ = []Relation{$1};
-				 }
 
 relation: ENTITY CARDINALITY CARDINALITY ENTITY
 			{
