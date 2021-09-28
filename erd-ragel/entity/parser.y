@@ -30,6 +30,7 @@ func setResult(l yyLexer, val Result) {
 
 %%
 
+// Body can be entity or relation, in any order.
 body: entity
 		{
 			$$.entities = []Entity{$1};
@@ -39,6 +40,7 @@ body: entity
 			$$.relations = []Relation{$1};
 		}
 
+// Main can have one or more body.
 main: body
 		{
 			$$ = $1;
@@ -81,9 +83,9 @@ attribute: PRIMARY_KEY ATTRIBUTE
 		 		 }
 
 relation: ENTITY CARDINALITY CARDINALITY ENTITY
-			{
-				$$.from = $1;
-				$$.fromCardinality = $3; // Note that the cardinality is the opposite.
-				$$.toCardinality = $2;
-				$$.to = $4;
-			}
+				{
+					$$.from = $1;
+					$$.fromCardinality = $3; // Note that the cardinality is the opposite.
+					$$.toCardinality = $2;
+					$$.to = $4;
+				}
