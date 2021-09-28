@@ -2,12 +2,14 @@
 state 0
 	$accept: .main $end 
 
-	'['  shift 4
+	ENTITY  shift 6
 	.  error
 
-	main  goto 1
 	entities  goto 2
-	entity  goto 3
+	entity  goto 4
+	relation  goto 5
+	relations  goto 3
+	main  goto 1
 
 state 1
 	$accept:  main.$end 
@@ -18,135 +20,185 @@ state 1
 
 state 2
 	main:  entities.    (1)
-	entities:  entities.BREAK entity 
+	main:  entities.relations 
+	entities:  entities.entity 
 
-	BREAK  shift 5
-	.  reduce 1 (src line 31)
+	ENTITY  shift 6
+	.  reduce 1 (src line 37)
 
+	entity  goto 8
+	relation  goto 5
+	relations  goto 7
 
 state 3
-	entities:  entity.    (3)
+	main:  relations.    (2)
+	main:  relations.entities 
+	relations:  relations.relation 
 
-	.  reduce 3 (src line 41)
+	ENTITY  shift 6
+	.  reduce 2 (src line 42)
 
+	entities  goto 9
+	entity  goto 4
+	relation  goto 10
 
 state 4
-	entity:  '['.STRING ']' NEWLINE attributes 
+	entities:  entity.    (6)
 
-	STRING  shift 6
-	.  error
+	.  reduce 6 (src line 64)
 
 
 state 5
-	entities:  entities BREAK.entity 
+	relations:  relation.    (14)
 
-	'['  shift 4
-	.  error
+	.  reduce 14 (src line 103)
 
-	entity  goto 7
 
 state 6
-	entity:  '[' STRING.']' NEWLINE attributes 
+	entity:  ENTITY.attributes 
+	relation:  ENTITY.CARDINALITY CARDINALITY ENTITY 
 
-	']'  shift 8
+	CARDINALITY  shift 12
+	ATTRIBUTE  shift 16
+	PRIMARY_KEY  shift 14
+	FOREIGN_KEY  shift 15
 	.  error
 
+	attribute  goto 13
+	attributes  goto 11
 
 state 7
-	entities:  entities BREAK entity.    (2)
+	main:  entities relations.    (3)
+	relations:  relations.relation 
 
-	.  reduce 2 (src line 37)
+	ENTITY  shift 17
+	.  reduce 3 (src line 47)
 
+	relation  goto 10
 
 state 8
-	entity:  '[' STRING ']'.NEWLINE attributes 
+	entities:  entities entity.    (5)
 
-	NEWLINE  shift 9
-	.  error
+	.  reduce 5 (src line 60)
 
 
 state 9
-	entity:  '[' STRING ']' NEWLINE.attributes 
+	main:  relations entities.    (4)
+	entities:  entities.entity 
 
-	PRIMARY_KEY  shift 12
-	FOREIGN_KEY  shift 13
-	ATTRIBUTE  shift 14
-	.  error
+	ENTITY  shift 18
+	.  reduce 4 (src line 53)
 
-	attribute  goto 11
-	attributes  goto 10
+	entity  goto 8
 
 state 10
-	entity:  '[' STRING ']' NEWLINE attributes.    (4)
-	attributes:  attributes.NEWLINE attribute 
+	relations:  relations relation.    (13)
 
-	NEWLINE  shift 15
-	.  reduce 4 (src line 46)
+	.  reduce 13 (src line 99)
 
 
 state 11
-	attributes:  attribute.    (6)
-
-	.  reduce 6 (src line 57)
-
-
-state 12
-	attribute:  PRIMARY_KEY.ATTRIBUTE 
+	entity:  ENTITY attributes.    (7)
+	attributes:  attributes.attribute 
 
 	ATTRIBUTE  shift 16
+	PRIMARY_KEY  shift 14
+	FOREIGN_KEY  shift 15
+	.  reduce 7 (src line 69)
+
+	attribute  goto 19
+
+state 12
+	relation:  ENTITY CARDINALITY.CARDINALITY ENTITY 
+
+	CARDINALITY  shift 20
 	.  error
 
 
 state 13
-	attribute:  FOREIGN_KEY.ATTRIBUTE 
+	attributes:  attribute.    (9)
 
-	ATTRIBUTE  shift 17
-	.  error
+	.  reduce 9 (src line 79)
 
 
 state 14
-	attribute:  ATTRIBUTE.    (9)
+	attribute:  PRIMARY_KEY.ATTRIBUTE 
 
-	.  reduce 9 (src line 72)
+	ATTRIBUTE  shift 21
+	.  error
 
 
 state 15
-	attributes:  attributes NEWLINE.attribute 
+	attribute:  FOREIGN_KEY.ATTRIBUTE 
 
-	PRIMARY_KEY  shift 12
-	FOREIGN_KEY  shift 13
-	ATTRIBUTE  shift 14
+	ATTRIBUTE  shift 22
 	.  error
 
-	attribute  goto 18
 
 state 16
-	attribute:  PRIMARY_KEY ATTRIBUTE.    (7)
+	attribute:  ATTRIBUTE.    (12)
 
-	.  reduce 7 (src line 62)
+	.  reduce 12 (src line 94)
 
 
 state 17
-	attribute:  FOREIGN_KEY ATTRIBUTE.    (8)
+	relation:  ENTITY.CARDINALITY CARDINALITY ENTITY 
 
-	.  reduce 8 (src line 67)
+	CARDINALITY  shift 12
+	.  error
 
 
 state 18
-	attributes:  attributes NEWLINE attribute.    (5)
+	entity:  ENTITY.attributes 
 
-	.  reduce 5 (src line 53)
+	ATTRIBUTE  shift 16
+	PRIMARY_KEY  shift 14
+	FOREIGN_KEY  shift 15
+	.  error
+
+	attribute  goto 13
+	attributes  goto 11
+
+state 19
+	attributes:  attributes attribute.    (8)
+
+	.  reduce 8 (src line 75)
 
 
-12 terminals, 6 nonterminals
-10 grammar rules, 19/16000 states
+state 20
+	relation:  ENTITY CARDINALITY CARDINALITY.ENTITY 
+
+	ENTITY  shift 23
+	.  error
+
+
+state 21
+	attribute:  PRIMARY_KEY ATTRIBUTE.    (10)
+
+	.  reduce 10 (src line 84)
+
+
+state 22
+	attribute:  FOREIGN_KEY ATTRIBUTE.    (11)
+
+	.  reduce 11 (src line 89)
+
+
+state 23
+	relation:  ENTITY CARDINALITY CARDINALITY ENTITY.    (15)
+
+	.  reduce 15 (src line 108)
+
+
+8 terminals, 8 nonterminals
+16 grammar rules, 24/16000 states
 0 shift/reduce, 0 reduce/reduce conflicts reported
-55 working sets used
-memory: parser 8/240000
+57 working sets used
+memory: parser 13/240000
 0 extra closures
-15 shift entries, 1 exceptions
-7 goto entries
-0 entries saved by goto default
-Optimizer space used: output 18/240000
-18 table entries, 0 zero
-maximum spread: 12, maximum offset: 15
+20 shift entries, 1 exceptions
+14 goto entries
+4 entries saved by goto default
+Optimizer space used: output 29/240000
+29 table entries, 0 zero
+maximum spread: 8, maximum offset: 11

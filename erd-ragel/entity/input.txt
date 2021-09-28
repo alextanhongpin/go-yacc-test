@@ -7,3 +7,5 @@ age, text
 *id, int (pk)
 title, text
 +author_id, text
+
+Users 1--* Books

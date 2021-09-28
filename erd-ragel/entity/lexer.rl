@@ -20,7 +20,17 @@ type Entity struct {
 	attributes []Attribute
 }
 
-type Result []Entity
+type Relation struct {
+	from string
+	to string
+	fromCardinality string
+	toCardinality string
+}
+
+type Result struct {
+	entities []Entity
+	relations []Relation
+}
 
 type Lexer struct {
 	data []byte
@@ -28,7 +38,8 @@ type Lexer struct {
 	ts, te, act int
 	stack []int
 	top int
-	result []Entity
+
+	result Result
 }
 
 func NewLexer(data []byte) *Lexer {
@@ -50,11 +61,11 @@ func (lex *Lexer) Lex(lval *yySymType) int {
 	yyErrorVerbose = true
 
 	%%{
-		word = (alpha | '_' );
-		string = (word+|'`' word(word|' ')*word+ '`'| "'" word(word|' ')*word "'" | '"' word(word|' ')*word '"');
-		break = [\r\n]{2,};
-		nl = [\r\n];
-		attribute = (word | '-' | '(' | ')' | ' ' | ',')+;
+		ch = (alpha | '_' );
+		string = (ch+|'`' ch(ch|' ')*ch+ '`'| "'" ch(ch|' ')*ch "'" | '"' ch(ch|' ')*ch '"');
+		attribute = ch(ch | '-' | '(' | ')' | ' ' | ',')*;
+		cardinality = ('?' | '1' | '*' | '+');
+		newline = [\r\n];
 
 		prepush {
 			// Dynamically resize the stack.
@@ -64,24 +75,40 @@ func (lex *Lexer) Lex(lval *yySymType) int {
 		}
 
 		entity := |*
-			string    { tok = STRING; lval.str = lex.string(); fbreak; };
-			'[' | ']' { tok = lex.token(); fbreak; };
-			nl 				{ fhold; fret; }; # Return to main without consuming token.
+			# Trims the first and last character.
+			'[' string ']'{ tok = ENTITY; lval.str = string(lex.data[lex.ts+1:lex.te-1]); fbreak; };
+			'*' 					{ tok = PRIMARY_KEY; lval.str = lex.string(); fbreak; };
+			'+' 					{ tok = FOREIGN_KEY; lval.str = lex.string(); fbreak; };
+			attribute 		{ tok = ATTRIBUTE; lval.str = lex.string(); fbreak; };
+			newline{2,} 	{ fret; };
+			newline;
 		*|;
 
-		main := |*
-			'*' => { lval.str = lex.string(); println("*:", lex.string()); tok = PRIMARY_KEY; fbreak; };
-			'+' => { lval.str = lex.string(); println("+:", lex.string()); tok = FOREIGN_KEY; fbreak; };
-			string => { lval.str = lex.string(); println("string:", lex.string()); tok = STRING; fbreak; };
-			attribute => { lval.str = lex.string(); tok = ATTRIBUTE; fbreak; };
-			break => { tok = BREAK; fbreak; };
-			# nl => { println("nl", lex.te, eof); if lex.te == eof { fbreak; } else { tok = NEWLINE; } };
-			# NOTE: We skip the last EOF if exists ...
-			nl => { if lex.te != eof { tok = NEWLINE }; fbreak; };
-			'[' { fhold; fcall entity; }; # On detecting the first bracket, handle the substate.
-			' ';
-			any => { tok = lex.token(); fbreak; };
+		relation := |*
+			cardinality { tok = CARDINALITY; lval.str = lex.string(); fbreak; };
+			string 			{ tok = ENTITY; lval.str = lex.string(); fbreak; };
+			newline{2,} { fret; }; # Return to the main machine once two or more newline is found.
+			('-'|' '); # Skips dashes and spaces.
+			newline;   # Skips newline.
 		*|;
+
+		action call_entity {
+			// fhold does not consume the token.
+			fhold; fcall entity;
+		}
+
+		action call_relation {
+			// fhold does not consume the token.
+			fhold; fcall relation;
+		}
+
+		# Body consists of relation or entity.
+		body =
+			^'[' @call_relation | # Anything that doesn't start with a left bracket is potentially a relation.
+			'[' @call_entity;     # Otherwise, it's an entity.
+
+		# Main can have multiple bodies.
+		main := body+;
 
 		write exec;
 

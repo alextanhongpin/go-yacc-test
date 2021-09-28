@@ -13,7 +13,7 @@ import (
 func Parse(input []byte) {
 	lexer := NewLexer(input)
 	log.Println(yyParse(lexer))
-	for i, ent := range lexer.result {
+	for i, ent := range lexer.result.entities {
 		log.Printf("%d. %+v\n", i+1, ent.name)
 		for j, attr := range ent.attributes {
 			var symbol string
@@ -25,5 +25,9 @@ func Parse(input []byte) {
 			log.Printf("%d. %s%+v\n", j+1, symbol, attr.field)
 		}
 		log.Println("")
+	}
+
+	for i, relation := range lexer.result.relations {
+		log.Printf("%d. %+v\n", i+1, relation)
 	}
 }

@@ -8,21 +8,27 @@ func setResult(l yyLexer, val Result) {
 
 %union {
 	str string
-	entity Entity
-	entities []Entity
-	attributes []Attribute
-	attribute Attribute
 	isPrimary bool
 	isForeign bool
+	attribute Attribute
+	attributes []Attribute
+	entities []Entity
+	entity Entity
+	relations []Relation
+	relation Relation
+
+	result Result
 }
 
-%token NEWLINE BREAK
-%token <str> ENTITY STRING PRIMARY_KEY FOREIGN_KEY ATTRIBUTE
+%token <str> CARDINALITY ENTITY ATTRIBUTE PRIMARY_KEY FOREIGN_KEY
 
 %type <attribute> attribute
-%type <entities> main entities
-%type <entity> entity
 %type <attributes> attributes
+%type <entities> entities
+%type <entity> entity
+%type <relation> relation
+%type <relations> relations
+%type <result> main
 
 %start main
 
@@ -30,29 +36,45 @@ func setResult(l yyLexer, val Result) {
 
 main: entities
 		{
+			$$.entities = $1;
+			setResult(yylex, $$);
+		}
+		| relations
+		{
+			$$.relations = $1;
+			setResult(yylex, $$);
+		}
+		| entities relations
+		{
+			$$.entities = $1;
+			$$.relations = $2;
+			setResult(yylex, $$);
+		}
+		| relations entities
+		{
+			$$.relations = $1;
+			$$.entities = $2;
 			setResult(yylex, $$);
 		}
 
-// Entities are separated by newline.
-entities: entities BREAK entity
+entities: entities entity
 				{
-					$$ = append($$, $3);
+					$$ = append($$, $2);
 				}
 				| entity
 				{
 					$$ = []Entity{$1};
 				}
 
-entity: '[' STRING ']' NEWLINE attributes
+entity: ENTITY attributes
 			{
-				$$.name = $2;
-				$$.attributes = $5;
+				$$.name = $1;
+				$$.attributes = $2;
 			}
 
-// Attributes are separated by newline.
-attributes: attributes NEWLINE attribute
+attributes: attributes attribute
 					{
-						$$ = append($$, $3);
+						$$ = append($$, $2);
 					}
 					| attribute
 					{
@@ -73,3 +95,20 @@ attribute: PRIMARY_KEY ATTRIBUTE
 				 {
 				 	 $$.field = $1;
 		 		 }
+
+relations: relations relation
+				 {
+				   $$ = append($$, $2);
+				 }
+				 | relation
+				 {
+					 $$ = []Relation{$1};
+				 }
+
+relation: ENTITY CARDINALITY CARDINALITY ENTITY
+			{
+				$$.from = $1;
+				$$.fromCardinality = $3; // Note that the cardinality is the opposite.
+				$$.toCardinality = $2;
+				$$.to = $4;
+			}
